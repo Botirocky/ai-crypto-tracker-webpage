@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI Crypto Tracker – AI-alapú eszközelemző, gépi tanulású előrejelzéssel, technikai indikátorokkal és valós idejű VÉTEL/ELADÁS jelzésekkel.">
+<title>AI Crypto Tracker — A Sasquatch, aki olvas a piacból</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05090a;
+    --bg-2:#0a1311;
+    --panel:rgba(16,28,24,.6);
+    --line:rgba(120,255,190,.12);
+    --txt:#e9f5ee;
+    --muted:#8aa399;
+    --neon:#23e87a;     /* sasquatch green */
+    --neon-2:#aef85e;   /* lime */
+    --gold:#ffcb45;
+    --up:#23e87a;
+    --down:#ff5d73;
+    --glow:0 0 26px rgba(35,232,122,.4);
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    background:var(--bg);color:var(--txt);line-height:1.6;overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  .neon{color:var(--neon)}
+  .display{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;
+    letter-spacing:.5px;line-height:.94}
+  .grad{background:linear-gradient(100deg,var(--neon),var(--neon-2));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* background */
+  .bg-fx{position:fixed;inset:0;z-index:-2;overflow:hidden}
+  .bg-fx::before,.bg-fx::after{content:"";position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}
+  .bg-fx::before{width:580px;height:580px;background:#0e7d4e;top:-160px;left:-120px}
+  .bg-fx::after{width:520px;height:520px;background:#3c7a12;top:28%;right:-150px}
+  .grid-fx{position:fixed;inset:0;z-index:-1;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:46px 46px;
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0,#000,transparent 75%);
+            mask-image:radial-gradient(ellipse 80% 60% at 50% 0,#000,transparent 75%);opacity:.55}
+
+  /* nav */
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);
+    background:rgba(5,9,10,.62);border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .logo{display:flex;align-items:center;gap:11px;font-family:'Anton';font-size:1.15rem;letter-spacing:.6px;text-transform:uppercase}
+  .logo .dot{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--neon),var(--neon-2));
+    box-shadow:var(--glow);display:grid;place-items:center;color:#04130b;font-weight:700;font-family:'JetBrains Mono';font-size:.9rem}
+  .nav-links{display:flex;gap:26px;align-items:center}
+  .nav-links a{color:var(--muted);font-size:.93rem;font-weight:500;transition:color .2s}
+  .nav-links a:hover{color:var(--txt)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;
+    font-weight:700;font-size:.92rem;cursor:pointer;border:1px solid transparent;transition:.25s;white-space:nowrap;
+    text-transform:uppercase;letter-spacing:.4px}
+  .btn-primary{background:linear-gradient(120deg,var(--neon),var(--neon-2));color:#04130b;box-shadow:var(--glow)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 36px rgba(35,232,122,.6)}
+  .btn-ghost{border-color:var(--line);color:var(--txt);background:var(--panel)}
+  .btn-ghost:hover{border-color:var(--neon);color:var(--neon)}
+  .nav-toggle{display:none;background:none;border:0;color:var(--txt);font-size:1.5rem;cursor:pointer}
+
+  /* ticker */
+  .ticker{border-bottom:1px solid var(--line);background:var(--bg-2);overflow:hidden;white-space:nowrap}
+  .ticker-track{display:inline-flex;gap:40px;padding:9px 0;animation:scroll 32s linear infinite}
+  .ticker:hover .ticker-track{animation-play-state:paused}
+  .tk{font-family:'JetBrains Mono';font-size:.85rem;color:var(--muted)}
+  .tk b{color:var(--txt)} .tk .u{color:var(--up)} .tk .d{color:var(--down)}
+  @keyframes scroll{to{transform:translateX(-50%)}}
+
+  /* hero */
+  .hero{padding:70px 0 40px}
+  .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+  .badge{display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border:1px solid var(--line);
+    border-radius:99px;background:var(--panel);font-size:.8rem;color:var(--muted);margin-bottom:22px;font-weight:600}
+  .badge .pulse{width:8px;height:8px;border-radius:50%;background:var(--up);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(35,232,122,.6)}70%{box-shadow:0 0 0 9px rgba(35,232,122,0)}100%{box-shadow:0 0 0 0 rgba(35,232,122,0)}}
+  .hero h1{font-size:clamp(2.8rem,6.5vw,5.4rem);margin-bottom:20px}
+  .hero h1 em{font-style:normal;color:transparent;-webkit-text-stroke:2px var(--neon)}
+  .hero p.lead{max-width:520px;margin:0 0 30px;color:var(--muted);font-size:clamp(1rem,1.6vw,1.16rem)}
+  .hero-cta{display:flex;gap:13px;flex-wrap:wrap;margin-bottom:34px}
+  .stats{display:flex;gap:34px;flex-wrap:wrap}
+  .stat b{display:block;font-family:'Anton';font-size:2rem;letter-spacing:.5px}
+  .stat span{color:var(--muted);font-size:.82rem}
+
+  /* mascot / coin */
+  .mascot-wrap{position:relative;display:grid;place-items:center;perspective:1200px}
+  .mascot-disc{position:absolute;width:78%;aspect-ratio:1;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,203,69,.28),transparent 62%);filter:blur(8px)}
+  .coin-float{position:relative;animation:float 5.5s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+  svg.coin{width:100%;max-width:360px;height:auto;display:block;
+    filter:drop-shadow(0 22px 50px rgba(0,0,0,.55));
+    transform-style:preserve-3d;animation:spin3d 6s linear infinite}
+  @keyframes spin3d{to{transform:rotateY(360deg)}}
+
+  /* partners */
+  .partners{padding:30px 0 10px;border-top:1px solid var(--line);margin-top:24px}
+  .partners .lbl{text-align:center;font-family:'JetBrains Mono';font-size:.74rem;letter-spacing:2.5px;
+    text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+  .plogos{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 30px;align-items:center}
+  .plogo{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:1rem;color:#9fb3a9;
+    opacity:.65;filter:grayscale(.4);transition:.25s;cursor:default}
+  .plogo:hover{opacity:1;filter:none;color:var(--txt)}
+  .plogo .pi{font-size:1.25rem}
+
+  /* sections */
+  section{padding:84px 0}
+  .sec-head{text-align:center;max-width:640px;margin:0 auto 56px}
+  .kicker{color:var(--neon);font-family:'JetBrains Mono';font-size:.8rem;letter-spacing:2px;text-transform:uppercase}
+  .sec-head h2{font-size:clamp(2rem,4.5vw,3.3rem);margin:12px 0 14px}
+  .sec-head p{color:var(--muted)}
+
+  /* terminal */
+  .terminal{max-width:880px;margin:0 auto;border:1px solid var(--line);border-radius:16px;
+    background:linear-gradient(180deg,rgba(14,26,22,.9),rgba(7,12,11,.95));overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .term-bar{display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
+  .term-bar i{width:12px;height:12px;border-radius:50%;display:inline-block}
+  .term-bar .r{background:#ff5f57}.term-bar .y{background:#febc2e}.term-bar .g{background:#28c840}
+  .term-bar span{margin-left:10px;color:var(--muted);font-size:.8rem;font-family:'JetBrains Mono'}
+  .term-body{padding:22px;font-family:'JetBrains Mono';font-size:.86rem;line-height:1.9;text-align:left}
+  .term-body .c1{color:var(--muted)} .term-body .c2{color:var(--neon)} .term-body .up{color:var(--up)}
+  .term-body .key{color:var(--neon-2)}
+  .signal{display:inline-block;padding:2px 10px;border-radius:6px;font-weight:700;font-size:.78rem}
+  .signal.buy{background:rgba(35,232,122,.14);color:var(--up);border:1px solid rgba(35,232,122,.4)}
+
+  .grid{display:grid;gap:20px}
+  .cards{grid-template-columns:repeat(3,1fr)}
+  .card{padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--panel);transition:.3s;position:relative;overflow:hidden}
+  .card:hover{transform:translateY(-5px);border-color:rgba(35,232,122,.4)}
+  .card .ic{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;font-size:1.4rem;
+    background:rgba(35,232,122,.1);border:1px solid rgba(35,232,122,.25);margin-bottom:18px}
+  .card h3{font-size:1.18rem;margin-bottom:9px}
+  .card p{color:var(--muted);font-size:.94rem}
+
+  .steps{grid-template-columns:repeat(4,1fr)}
+  .step{padding:26px;border:1px solid var(--line);border-radius:16px;background:var(--panel)}
+  .step .n{font-family:'Anton';font-size:2.6rem;color:transparent;-webkit-text-stroke:1.4px var(--neon);line-height:1;margin-bottom:12px;display:block}
+  .step h4{font-size:1.05rem;margin-bottom:7px}
+  .step p{color:var(--muted);font-size:.9rem}
+
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:54px;align-items:center}
+  .split h2{font-size:clamp(1.9rem,4vw,2.9rem);margin-bottom:18px}
+  .split p.lead{color:var(--muted);margin-bottom:26px}
+  .ilist{display:flex;flex-direction:column;gap:14px}
+  .irow{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+  .irow .tag{font-family:'JetBrains Mono';font-weight:700;color:var(--neon);min-width:64px}
+  .irow small{color:var(--muted);display:block}
+  .chip{margin-left:auto;font-family:'JetBrains Mono';font-size:.8rem;padding:3px 10px;border-radius:6px}
+  .chip.up{background:rgba(35,232,122,.12);color:var(--up)}
+  .chip.down{background:rgba(255,93,115,.12);color:var(--down)}
+  .chip.neu{background:rgba(138,163,153,.14);color:var(--muted)}
+  .panel-vis{border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:24px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+  .panel-vis .ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+  .panel-vis .ph b{font-size:1.1rem}
+  .panel-vis .ph .price{font-family:'JetBrains Mono';color:var(--up);font-weight:700}
+  svg.chart{width:100%;height:200px;display:block}
+
+  .ai-box{border:1px solid var(--line);border-radius:18px;
+    background:radial-gradient(120% 120% at 0 0,rgba(174,248,94,.1),transparent 60%),var(--panel);padding:34px;max-width:780px;margin:0 auto}
+  .ai-msg{display:flex;gap:14px;margin-bottom:18px}
+  .ai-av{width:40px;height:40px;border-radius:11px;flex:none;display:grid;place-items:center;font-weight:700;
+    background:linear-gradient(135deg,var(--neon-2),var(--neon));color:#04130b}
+  .ai-msg .body{border:1px solid var(--line);border-radius:13px;padding:16px 18px;background:rgba(0,0,0,.25)}
+  .ai-msg .body p{margin:0;font-size:.96rem}
+  .ai-msg .body .meta{font-size:.78rem;color:var(--muted);margin-bottom:6px;font-family:'JetBrains Mono'}
+
+  .community{grid-template-columns:repeat(4,1fr)}
+  .soc{display:flex;flex-direction:column;gap:8px;align-items:flex-start;padding:24px;border:1px solid var(--line);
+    border-radius:15px;background:var(--panel);transition:.25s}
+  .soc:hover{transform:translateY(-4px);border-color:rgba(35,232,122,.5)}
+  .soc .e{font-size:1.7rem} .soc b{font-size:1.02rem} .soc span{color:var(--muted);font-size:.85rem}
+
+  .cta{margin:30px auto 0;max-width:var(--maxw)}
+  .cta-inner{border:1px solid var(--line);border-radius:22px;text-align:center;padding:60px 24px;
+    background:radial-gradient(120% 140% at 50% 0,rgba(35,232,122,.14),transparent 60%),var(--bg-2)}
+  .cta-inner h2{font-size:clamp(2rem,4.5vw,3.4rem);margin-bottom:14px}
+  .cta-inner p{color:var(--muted);max-width:520px;margin:0 auto 30px}
+
+  footer{border-top:1px solid var(--line);padding:46px 0 30px;margin-top:40px;color:var(--muted)}
+  .foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center}
+  .foot-links{display:flex;gap:20px;flex-wrap:wrap}
+  .foot-links a{color:var(--muted);font-size:.9rem}
+  .foot-links a:hover{color:var(--neon)}
+  .disclaimer{margin-top:26px;padding-top:22px;border-top:1px solid var(--line);font-size:.78rem;color:#5d7368;max-width:760px}
+
+  .reveal{opacity:0;transform:translateY(26px);transition:.7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.show{opacity:1;transform:none}
+
+  @media(max-width:900px){
+    .hero-grid{grid-template-columns:1fr;text-align:center}
+    .hero p.lead{margin-inline:auto} .hero-cta,.stats{justify-content:center}
+    .mascot-wrap{order:-1;max-width:380px;margin:0 auto 14px}
+    .cards,.steps,.community{grid-template-columns:1fr 1fr}
+    .split{grid-template-columns:1fr;gap:34px}
+  }
+  @media(max-width:640px){
+    .nav-links{position:fixed;inset:68px 0 auto 0;flex-direction:column;background:var(--bg-2);
+      padding:22px;border-bottom:1px solid var(--line);transform:translateY(-150%);transition:.3s;gap:18px}
+    .nav-links.open{transform:none}
+    .nav-toggle{display:block}
+    .cards,.steps,.community{grid-template-columns:1fr}
+    .stats{gap:22px} .term-body{font-size:.74rem}
+  }
+</style>
+</head>
+<body>
+<div class="bg-fx"></div>
+<div class="grid-fx"></div>
+
+<!-- NAV -->
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="#top"><span class="dot">Ai</span> AI Crypto Tracker</a>
+      <div class="nav-links" id="navlinks">
+        <a href="#funkciok">Funkciók</a>
+        <a href="#hogyan">Hogyan működik</a>
+        <a href="#indikatorok">Indikátorok</a>
+        <a href="#ai">AI elemző</a>
+        <a href="#kozosseg">Közösség</a>
+        <a class="btn btn-primary" href="#cta">Letöltés ↗</a>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Menü">☰</button>
+    </nav>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-track" id="ticker"></div></div>
+
+<main id="top">
+<!-- HERO -->
+<section class="hero wrap">
+  <div class="hero-grid">
+    <div>
+      <span class="badge"><span class="pulse"></span> Élő jelzések · gépi tanulás · 0 érzelem</span>
+      <h1 class="display">AZ <em>AI</em>,<br>AMI OLVAS<br>AZ ÁRFOLYAMOK<br>KÖZÖTT.</h1>
+      <p class="lead">Az AI Crypto Tracker a vadonból hozza a jelet: gépi tanulású előrejelzés,
+      technikai indikátorok és élő VÉTEL/ELADÁS riasztások — közvetlen Discordra. Te döntesz, a bestia figyel.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#cta">Csatlakozz a falkához →</a>
+        <a class="btn btn-ghost" href="#hogyan">Hogyan működik?</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b class="grad">15+</b><span>technikai indikátor</span></div>
+        <div class="stat"><b class="grad">2</b><span>AI motor — Claude &amp; GPT</span></div>
+        <div class="stat"><b class="grad">24/7</b><span>folyamatos figyelés</span></div>
+      </div>
+    </div>
+
+    <!-- BITCOIN COIN -->
+    <div class="mascot-wrap">
+      <div class="mascot-disc"></div>
+      <div class="coin-float">
+        <svg class="coin" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Forgó Bitcoin érme">
+          <defs>
+            <radialGradient id="coinFace" cx="38%" cy="30%" r="78%">
+              <stop offset="0" stop-color="#fff3cf"/><stop offset="48%" stop-color="#ffcb45"/>
+              <stop offset="100%" stop-color="#d98a12"/>
+            </radialGradient>
+            <linearGradient id="coinRim" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffe082"/><stop offset="1" stop-color="#b9810f"/>
+            </linearGradient>
+            <linearGradient id="btcSym" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#9a6707"/><stop offset="1" stop-color="#7a5208"/>
+            </linearGradient>
+          </defs>
+
+          <!-- coin body -->
+          <circle cx="120" cy="120" r="112" fill="url(#coinRim)"/>
+          <circle cx="120" cy="120" r="100" fill="url(#coinFace)" stroke="#b9810f" stroke-width="2"/>
+          <!-- inner ring -->
+          <circle cx="120" cy="120" r="86" fill="none" stroke="#fff3c4" stroke-width="3" stroke-opacity=".7"/>
+
+          <!-- bitcoin ₿ symbol -->
+          <text x="120" y="166" text-anchor="middle" font-family="Anton, sans-serif" font-size="150"
+                font-weight="700" fill="url(#btcSym)">₿</text>
+
+          <!-- highlight -->
+          <ellipse cx="86" cy="80" rx="40" ry="22" fill="#ffffff" opacity=".28" transform="rotate(-28 86 80)"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARTNERS / POWERED BY -->
+  <div class="partners reveal">
+    <div class="lbl">Az adatok és az AI mögött</div>
+    <div class="plogos">
+      <span class="plogo"><span class="pi">🦎</span> CoinGecko</span>
+      <span class="plogo"><span class="pi">📈</span> Yahoo Finance</span>
+      <span class="plogo"><span class="pi">✦</span> Claude</span>
+      <span class="plogo"><span class="pi">◍</span> OpenAI</span>
+      <span class="plogo"><span class="pi">🐍</span> Python</span>
+      <span class="plogo"><span class="pi">📊</span> scikit-learn</span>
+    </div>
+  </div>
+</section>
+
+<!-- TERMINAL DEMO -->
+<section class="wrap" style="padding-top:30px">
+  <div class="sec-head reveal">
+    <span class="kicker">// élő demó</span>
+    <h2 class="display">Egy elemzés, lépésről lépésre</h2>
+  </div>
+  <div class="terminal reveal">
+    <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>ai-crypto-tracker · analízis</span></div>
+    <div class="term-body">
+      <div><span class="c1">$</span> <span class="c2">tracker</span> --analyze BTC-USD</div>
+      <div><span class="c1"># adatok betöltése: Yahoo Finance ✓</span></div>
+      <div><span class="key">RSI</span>(14): <span class="up">31.4</span> &nbsp; <span class="key">MACD</span>: <span class="up">bullish kereszteződés</span> &nbsp; <span class="key">BB</span>: alsó sáv</div>
+      <div><span class="key">ML modell</span> (RandomForest + GradientBoost): <span class="up">+4.8%</span> 7 napra</div>
+      <div>&nbsp;</div>
+      <div><span class="c1">→ Döntés:</span> <span class="signal buy">VÉTEL</span> &nbsp;<span class="c1">megbízhatóság 82%</span></div>
+      <div><span class="c1"># Discord értesítés elküldve ✓</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="funkciok" class="wrap">
+  <div class="sec-head reveal">
+    <span class="kicker">// amit tud</span>
+    <h2 class="display">Minden eszköz egy helyen</h2>
+    <p>Nem jóslás. Adat, modell és fegyelem — átlátható jelzésekké fordítva.</p>
+  </div>
+  <div class="grid cards">
+    <div class="card reveal"><div class="ic">🧠</div><h3>Gépi tanulású előrejelzés</h3><p>RandomForest és GradientBoost modellek a historikus áradatból tanulnak, és valószínűségi árirányt becsülnek.</p></div>
+    <div class="card reveal"><div class="ic">📊</div><h3>Technikai indikátorok</h3><p>RSI, MACD, Bollinger-szalagok, mozgóátlagok és momentum — automatikusan kiszámolva minden eszközre.</p></div>
+    <div class="card reveal"><div class="ic">🕯️</div><h3>Saját gyertyadiagram</h3><p>Natívan rajzolt, gyors candlestick chart QPainterrel — zoom, idősíkok, indikátor-overlay.</p></div>
+    <div class="card reveal"><div class="ic">🤖</div><h3>AI kommentár</h3><p>Claude és OpenAI emberi nyelven foglalja össze, mit jelentenek a számok — és mire érdemes figyelni.</p></div>
+    <div class="card reveal"><div class="ic">🔔</div><h3>Discord jelzések</h3><p>Minden új VÉTEL/ELADÁS döntés azonnal megérkezik Discordon — nem ülsz egész nap a képernyő előtt.</p></div>
+    <div class="card reveal"><div class="ic">💾</div><h3>Előzmények &amp; portfólió</h3><p>SQLite napló minden elemzésről, kedvencek és holdingok követése, visszamérhető döntések.</p></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="hogyan" class="wrap">
+  <div class="sec-head reveal">
+    <span class="kicker">// pipeline</span>
+    <h2 class="display">Négy lépés a jelzésig</h2>
+    <p>Az adattól a döntésig — minden automatizálva, átláthatóan.</p>
+  </div>
+  <div class="grid steps">
+    <div class="step reveal"><span class="n">01</span><h4>Adatgyűjtés</h4><p>Élő ár- és volumenadatok Yahoo Finance-ről, percre kész frissítéssel.</p></div>
+    <div class="step reveal"><span class="n">02</span><h4>Elemzés</h4><p>Indikátorok kiszámítása + ML modell betanítás az eszköz történetén.</p></div>
+    <div class="step reveal"><span class="n">03</span><h4>AI döntés</h4><p>A jelek súlyozása, VÉTEL/ELADÁS/TARTÁS javaslat megbízhatósági szinttel.</p></div>
+    <div class="step reveal"><span class="n">04</span><h4>Értesítés</h4><p>Jelzés Discordon, naplózva az előzmények közé.</p></div>
+  </div>
+</section>
+
+<!-- INDICATORS -->
+<section id="indikatorok" class="wrap">
+  <div class="split">
+    <div class="reveal">
+      <span class="kicker">// a motorháztető alatt</span>
+      <h2 class="display">Indikátorok, amikben<br>a profik bíznak</h2>
+      <p class="lead">Nem egyetlen jelre épít. Több, egymástól független indikátor konszenzusa adja a végső döntést — így kevesebb a fals jelzés.</p>
+      <div class="ilist">
+        <div class="irow"><span class="tag">RSI</span><div>Relatív erő index<small>túladott / túlvett zónák</small></div><span class="chip up">túladott</span></div>
+        <div class="irow"><span class="tag">MACD</span><div>Mozgóátlag konvergencia<small>trendforduló jelzés</small></div><span class="chip up">bullish</span></div>
+        <div class="irow"><span class="tag">BB</span><div>Bollinger-szalagok<small>volatilitás &amp; sávkitörés</small></div><span class="chip neu">semleges</span></div>
+        <div class="irow"><span class="tag">MA</span><div>Mozgóátlagok<small>50/200 napos kereszteződés</small></div><span class="chip up">golden cross</span></div>
+      </div>
+    </div>
+    <div class="panel-vis reveal">
+      <div class="ph"><b>BTC-USD</b><span class="price">▲ +4.8% · 7d előrejelzés</span></div>
+      <svg class="chart" viewBox="0 0 400 200" preserveAspectRatio="none">
+        <defs><linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="rgba(35,232,122,.35)"/><stop offset="1" stop-color="rgba(35,232,122,0)"/>
+        </linearGradient></defs>
+        <polyline fill="none" stroke="var(--neon)" stroke-width="2.5" points="0,150 40,140 80,155 120,120 160,128 200,95 240,105 280,70 320,82 360,48 400,40"/>
+        <polygon fill="url(#fill)" points="0,150 40,140 80,155 120,120 160,128 200,95 240,105 280,70 320,82 360,48 400,40 400,200 0,200"/>
+        <line x1="280" y1="70" x2="280" y2="200" stroke="rgba(174,248,94,.5)" stroke-dasharray="4"/>
+        <circle cx="280" cy="70" r="5" fill="var(--neon-2)"/>
+      </svg>
+      <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono';font-size:.75rem;color:var(--muted);margin-top:8px">
+        <span>− 30 nap</span><span style="color:var(--neon-2)">↑ jelenlegi jelzés</span><span>előrejelzés →</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI -->
+<section id="ai" class="wrap">
+  <div class="sec-head reveal">
+    <span class="kicker">// AI elemző</span>
+    <h2 class="display">Mintha lenne egy elemződ —<br>aki sosem alszik</h2>
+    <p>A számok mellé emberi nyelvű magyarázat. Két AI motor: Claude és GPT.</p>
+  </div>
+  <div class="ai-box reveal">
+    <div class="ai-msg">
+      <div class="ai-av">Ai</div>
+      <div class="body">
+        <div class="meta">AI Crypto Tracker · Claude · 2 perce</div>
+        <p>A <b>BTC-USD</b> jelenleg túladott RSI-zónában van (31,4), miközben a MACD bullish kereszteződést mutat és az ár az alsó Bollinger-sávhoz közelít. A modell 7 napra <b>+4,8%</b> mozgást becsül. A jelek konszenzusa <b style="color:var(--up)">VÉTEL</b>-t támogat, 82%-os megbízhatósággal — de figyeld a 200 napos mozgóátlagot ellenállásként.</p>
+      </div>
+    </div>
+    <div class="ai-msg" style="margin-bottom:0">
+      <div class="ai-av" style="background:linear-gradient(135deg,#aef85e,var(--neon))">Te</div>
+      <div class="body" style="background:rgba(35,232,122,.05)">
+        <div class="meta">Te · most</div>
+        <p>És kockázat oldalon mire figyeljek?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section id="kozosseg" class="wrap">
+  <div class="sec-head reveal">
+    <span class="kicker">// csatlakozz</span>
+    <h2 class="display">Légy ott, ahol a jelzések<br>megszületnek</h2>
+    <p>Discord, nyílt fejlesztés és minden linkem egy helyen.</p>
+  </div>
+  <div class="grid community">
+    <a class="soc reveal" href="https://linktr.ee/Botirocky" target="_blank" rel="noopener"><span class="e">🔗</span><b>Linktree</b><span>Minden elérhetőségem egy helyen</span></a>
+    <a class="soc reveal" href="https://github.com/Botirocky" target="_blank" rel="noopener"><span class="e">🐙</span><b>GitHub</b><span>Nyílt fejlesztés &amp; changelog</span></a>
+    <a class="soc reveal" href="mailto:buczibotond@gmail.com"><span class="e">✉️</span><b>E‑mail</b><span>buczibotond@gmail.com</span></a>
+    <button class="soc reveal" id="discordCard" type="button" data-user="the.kobe" style="font-family:inherit;color:inherit;cursor:pointer;text-align:left"><span class="e">💬</span><b>Discord</b><span id="discordLabel">the.kobe · kattints a másoláshoz</span></button>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="cta">
+  <div class="cta-inner wrap reveal">
+    <span class="kicker">// kezdd el még ma</span>
+    <h2 class="display">Engedd, hogy a bestia<br>figyelje a piacot helyetted.</h2>
+    <p>Telepítsd a desktop appot, kösd be a Discord értesítéseket, és kapd meg az első jelzést percek alatt.</p>
+    <div class="hero-cta" style="justify-content:center;margin-bottom:0">
+      <a class="btn btn-primary" href="https://github.com/Botirocky" target="_blank" rel="noopener">⬇ Letöltés &amp; forráskód</a>
+      <a class="btn btn-ghost" href="https://linktr.ee/Botirocky" target="_blank" rel="noopener">Minden linkem ↗</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <a class="logo" href="#top"><span class="dot">Ai</span> AI Crypto Tracker</a>
+      <div class="foot-links">
+        <a href="#funkciok">Funkciók</a>
+        <a href="#hogyan">Működés</a>
+        <a href="#indikatorok">Indikátorok</a>
+        <a href="#ai">AI</a>
+        <a href="https://github.com/Botirocky" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linktr.ee/Botirocky" target="_blank" rel="noopener">Linktree</a>
+        <a href="mailto:buczibotond@gmail.com">E‑mail</a>
+      </div>
+    </div>
+    <p class="disclaimer">⚠️ Tájékoztatás: Az AI Crypto Tracker oktatási és elemzési segédeszköz. A megjelenített
+    jelzések és előrejelzések <b>nem minősülnek befektetési tanácsadásnak</b>. A kriptovaluta- és
+    eszközkereskedés magas kockázattal jár; saját felelősségedre, körültekintően dönts. A múltbeli
+    teljesítmény nem garancia a jövőbeli eredményekre.</p>
+    <p style="margin-top:18px;font-size:.82rem">© 2026 Buczi Botond · AI Crypto Tracker · Készült ❤️-tel és egy kis gépi tanulással.</p>
+  </div>
+</footer>
+
+<script>
+  // mobile nav
+  const tgl=document.getElementById('navToggle'),nl=document.getElementById('navlinks');
+  tgl.addEventListener('click',()=>nl.classList.toggle('open'));
+  nl.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nl.classList.remove('open')));
+
+  // ---- ticker: élő CoinGecko árak ----
+  const tk=document.getElementById('ticker');
+  const COINS=[
+    ['bitcoin','BTC'],['ethereum','ETH'],['solana','SOL'],['binancecoin','BNB'],
+    ['ripple','XRP'],['cardano','ADA'],['dogecoin','DOGE'],['avalanche-2','AVAX'],
+    ['chainlink','LINK'],['polkadot','DOT'],['polygon-ecosystem-token','POL'],['litecoin','LTC']
+  ];
+  const FALLBACK={
+    bitcoin:{usd:64218,usd_24h_change:2.4}, ethereum:{usd:3142,usd_24h_change:1.1},
+    solana:{usd:148.6,usd_24h_change:5.7}, binancecoin:{usd:592.3,usd_24h_change:-0.8},
+    ripple:{usd:0.612,usd_24h_change:3.2}, cardano:{usd:0.451,usd_24h_change:-1.4},
+    dogecoin:{usd:0.158,usd_24h_change:8.9}, 'avalanche-2':{usd:37.21,usd_24h_change:0.6},
+    chainlink:{usd:17.84,usd_24h_change:2.0}, polkadot:{usd:7.12,usd_24h_change:-2.1},
+    'polygon-ecosystem-token':{usd:0.724,usd_24h_change:1.8}, litecoin:{usd:84.5,usd_24h_change:0.4}
+  };
+  const fmtPrice=v=>{
+    if(v>=1000) return v.toLocaleString('en-US',{maximumFractionDigits:0});
+    if(v>=1)    return v.toLocaleString('en-US',{maximumFractionDigits:2});
+    return v.toLocaleString('en-US',{maximumFractionDigits:4});
+  };
+  function renderTicker(data,live){
+    const row=COINS.map(([id,sym])=>{
+      const d=data[id]; if(!d) return '';
+      const c=d.usd_24h_change??0, cls=c>=0?'u':'d', sign=c>=0?'▲':'▼';
+      return `<span class="tk"><b>${sym}</b> $${fmtPrice(d.usd)} <span class="${cls}">${sign} ${Math.abs(c).toFixed(2)}%</span></span>`;
+    }).join('');
+    const dot=`<span class="tk" style="color:var(--neon)">${live?'● ÉLŐ · CoinGecko':'○ tartalék árak'}</span>`;
+    const block=dot+row;
+    tk.innerHTML=block+block;
+  }
+  async function loadTicker(){
+    const ids=COINS.map(c=>c[0]).join(',');
+    const url=`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`;
+    try{
+      const res=await fetch(url,{headers:{accept:'application/json'}});
+      if(!res.ok) throw new Error(res.status);
+      const data=await res.json();
+      if(!data||!data.bitcoin) throw new Error('üres válasz');
+      renderTicker(data,true);
+    }catch(err){ renderTicker(FALLBACK,false); }
+  }
+  renderTicker(FALLBACK,false);
+  loadTicker();
+  setInterval(loadTicker,60000);
+
+  // reveal on scroll
+  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');io.unobserve(e.target);}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // Discord név vágólapra másolása
+  const dCard=document.getElementById('discordCard'),dLabel=document.getElementById('discordLabel');
+  if(dCard){
+    dCard.addEventListener('click',async()=>{
+      const user=dCard.dataset.user, orig='the.kobe · kattints a másoláshoz';
+      try{ await navigator.clipboard.writeText(user); dLabel.textContent='Másolva! ✓ '+user; }
+      catch(e){ dLabel.textContent=user; }
+      setTimeout(()=>dLabel.textContent=orig,2000);
+    });
+  }
+</script>
+</body>
+</html>
