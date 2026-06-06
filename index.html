@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="hu">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="AI Crypto Tracker – AI-alapú eszközelemző, gépi tanulású előrejelzéssel, technikai indikátorokkal és valós idejű VÉTEL/ELADÁS jelzésekkel.">
-<title>AI Crypto Tracker — A Sasquatch, aki olvas a piacból</title>
+<meta name="description" content="AI Crypto Tracker – AI-powered asset analyst with machine-learning forecasts, technical indicators and real-time BUY/SELL signals.">
+<title>AI Crypto Tracker — The beast that reads the market</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -58,6 +58,7 @@
   .logo{display:flex;align-items:center;gap:11px;font-family:'Anton';font-size:1.15rem;letter-spacing:.6px;text-transform:uppercase}
   .logo .dot{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--neon),var(--neon-2));
     box-shadow:var(--glow);display:grid;place-items:center;color:#04130b;font-weight:700;font-family:'JetBrains Mono';font-size:.9rem}
+  .nav-right{display:flex;align-items:center;gap:14px}
   .nav-links{display:flex;gap:26px;align-items:center}
   .nav-links a{color:var(--muted);font-size:.93rem;font-weight:500;transition:color .2s}
   .nav-links a:hover{color:var(--txt)}
@@ -68,6 +69,10 @@
   .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 36px rgba(35,232,122,.6)}
   .btn-ghost{border-color:var(--line);color:var(--txt);background:var(--panel)}
   .btn-ghost:hover{border-color:var(--neon);color:var(--neon)}
+  .lang-btn{background:var(--panel);border:1px solid var(--line);color:var(--txt);
+    font-family:'JetBrains Mono';font-size:.8rem;font-weight:700;padding:8px 12px;border-radius:9px;
+    cursor:pointer;letter-spacing:1.5px;transition:.2s}
+  .lang-btn:hover{border-color:var(--neon);color:var(--neon)}
   .nav-toggle{display:none;background:none;border:0;color:var(--txt);font-size:1.5rem;cursor:pointer}
 
   /* ticker */
@@ -85,7 +90,7 @@
     border-radius:99px;background:var(--panel);font-size:.8rem;color:var(--muted);margin-bottom:22px;font-weight:600}
   .badge .pulse{width:8px;height:8px;border-radius:50%;background:var(--up);animation:pulse 2s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(35,232,122,.6)}70%{box-shadow:0 0 0 9px rgba(35,232,122,0)}100%{box-shadow:0 0 0 0 rgba(35,232,122,0)}}
-  .hero h1{font-size:clamp(2.8rem,6.5vw,5.4rem);margin-bottom:20px}
+  .hero h1{font-size:clamp(2.8rem,6.5vw,5.4rem);margin-bottom:20px;line-height:1.1;letter-spacing:1.5px}
   .hero h1 em{font-style:normal;color:transparent;-webkit-text-stroke:2px var(--neon)}
   .hero p.lead{max-width:520px;margin:0 0 30px;color:var(--muted);font-size:clamp(1rem,1.6vw,1.16rem)}
   .hero-cta{display:flex;gap:13px;flex-wrap:wrap;margin-bottom:34px}
@@ -94,15 +99,29 @@
   .stat span{color:var(--muted);font-size:.82rem}
 
   /* mascot / coin */
-  .mascot-wrap{position:relative;display:grid;place-items:center;perspective:1200px}
-  .mascot-disc{position:absolute;width:78%;aspect-ratio:1;border-radius:50%;
-    background:radial-gradient(circle,rgba(255,203,69,.28),transparent 62%);filter:blur(8px)}
-  .coin-float{position:relative;animation:float 5.5s ease-in-out infinite}
+  .mascot-wrap{position:relative;display:grid;place-items:center;perspective:1400px}
+  .mascot-disc{position:absolute;width:82%;aspect-ratio:1;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,203,69,.34),transparent 64%);filter:blur(10px);
+    animation:discPulse 5.5s ease-in-out infinite}
+  @keyframes discPulse{0%,100%{opacity:.8;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
+  .coin-float{position:relative;width:100%;max-width:340px;margin:0 auto;
+    transform-style:preserve-3d;animation:float 5.5s ease-in-out infinite}
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
-  svg.coin{width:100%;max-width:360px;height:auto;display:block;
-    filter:drop-shadow(0 22px 50px rgba(0,0,0,.55));
-    transform-style:preserve-3d;animation:spin3d 6s linear infinite}
-  @keyframes spin3d{to{transform:rotateY(360deg)}}
+
+  /* valódi 3D érme: elő-/hátlap + arany perem rétegekből */
+  .coin-3d{position:relative;width:100%;aspect-ratio:1;
+    transform-style:preserve-3d;transform:rotateX(-12deg);
+    animation:spin3d 9s linear infinite;
+    filter:drop-shadow(0 32px 46px rgba(0,0,0,.6))}
+  @keyframes spin3d{
+    from{transform:rotateX(-12deg) rotateY(0)}
+    to{transform:rotateX(-12deg) rotateY(360deg)}}
+  .coin-layer{position:absolute;inset:0;border-radius:50%}
+  .coin-layer.face{backface-visibility:hidden}
+  .coin-layer.face svg{width:100%;height:100%;display:block}
+  .coin-layer.edge{background:linear-gradient(to bottom,
+    #5e4106 0%,#9a6f12 12%,#e3b53e 32%,#fff1c2 50%,#e3b53e 68%,#9a6f12 88%,#5e4106 100%)}
+  @media(prefers-reduced-motion:reduce){.coin-3d{animation:none}}
 
   /* partners */
   .partners{padding:30px 0 10px;border-top:1px solid var(--line);margin-top:24px}
@@ -223,15 +242,18 @@
   <div class="wrap">
     <nav>
       <a class="logo" href="#top"><span class="dot">Ai</span> AI Crypto Tracker</a>
-      <div class="nav-links" id="navlinks">
-        <a href="#funkciok">Funkciók</a>
-        <a href="#hogyan">Hogyan működik</a>
-        <a href="#indikatorok">Indikátorok</a>
-        <a href="#ai">AI elemző</a>
-        <a href="#kozosseg">Közösség</a>
-        <a class="btn btn-primary" href="#cta">Letöltés ↗</a>
+      <div class="nav-right">
+        <div class="nav-links" id="navlinks">
+          <a href="#funkciok" data-i18n="nav.features">Features</a>
+          <a href="#hogyan" data-i18n="nav.how">How it works</a>
+          <a href="#indikatorok" data-i18n="nav.indicators">Indicators</a>
+          <a href="#ai" data-i18n="nav.ai">AI analyst</a>
+          <a href="#kozosseg" data-i18n="nav.community">Community</a>
+          <a class="btn btn-primary" href="#cta" data-i18n="nav.download">Download ↗</a>
+        </div>
+        <button class="lang-btn" id="langBtn" aria-label="Switch language">HU</button>
+        <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
       </div>
-      <button class="nav-toggle" id="navToggle" aria-label="Menü">☰</button>
     </nav>
   </div>
 </header>
@@ -244,59 +266,33 @@
 <section class="hero wrap">
   <div class="hero-grid">
     <div>
-      <span class="badge"><span class="pulse"></span> Élő jelzések · gépi tanulás · 0 érzelem</span>
-      <h1 class="display">AZ <em>AI</em>,<br>AMI OLVAS<br>AZ ÁRFOLYAMOK<br>KÖZÖTT.</h1>
-      <p class="lead">Az AI Crypto Tracker a vadonból hozza a jelet: gépi tanulású előrejelzés,
-      technikai indikátorok és élő VÉTEL/ELADÁS riasztások — közvetlen Discordra. Te döntesz, a bestia figyel.</p>
+      <span class="badge"><span class="pulse"></span> <span data-i18n="hero.badge">Live signals · machine learning · 0 emotion</span></span>
+      <h1 class="display" data-i18n="hero.h1">THE <em>AI</em><br>THAT READS<br>BETWEEN THE<br>PRICES.</h1>
+      <p class="lead" data-i18n="hero.lead">AI Crypto Tracker brings the signal in from the wild: machine-learning forecasts,
+      technical indicators and live BUY/SELL alerts — straight to Discord. You decide, the beast watches.</p>
       <div class="hero-cta">
-        <a class="btn btn-primary" href="#cta">Csatlakozz a falkához →</a>
-        <a class="btn btn-ghost" href="#hogyan">Hogyan működik?</a>
+        <a class="btn btn-primary" href="#cta" data-i18n="hero.cta1">Join the pack →</a>
+        <a class="btn btn-ghost" href="#hogyan" data-i18n="hero.cta2">How it works?</a>
       </div>
       <div class="stats">
-        <div class="stat"><b class="grad">15+</b><span>technikai indikátor</span></div>
-        <div class="stat"><b class="grad">2</b><span>AI motor — Claude &amp; GPT</span></div>
-        <div class="stat"><b class="grad">24/7</b><span>folyamatos figyelés</span></div>
+        <div class="stat"><b class="grad">15+</b><span data-i18n="hero.stat1">technical indicators</span></div>
+        <div class="stat"><b class="grad">2</b><span data-i18n="hero.stat2">AI engines — Claude &amp; GPT</span></div>
+        <div class="stat"><b class="grad">24/7</b><span data-i18n="hero.stat3">continuous monitoring</span></div>
       </div>
     </div>
 
-    <!-- BITCOIN COIN -->
+    <!-- BITCOIN COIN (3D) -->
     <div class="mascot-wrap">
       <div class="mascot-disc"></div>
       <div class="coin-float">
-        <svg class="coin" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Forgó Bitcoin érme">
-          <defs>
-            <radialGradient id="coinFace" cx="38%" cy="30%" r="78%">
-              <stop offset="0" stop-color="#fff3cf"/><stop offset="48%" stop-color="#ffcb45"/>
-              <stop offset="100%" stop-color="#d98a12"/>
-            </radialGradient>
-            <linearGradient id="coinRim" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#ffe082"/><stop offset="1" stop-color="#b9810f"/>
-            </linearGradient>
-            <linearGradient id="btcSym" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#9a6707"/><stop offset="1" stop-color="#7a5208"/>
-            </linearGradient>
-          </defs>
-
-          <!-- coin body -->
-          <circle cx="120" cy="120" r="112" fill="url(#coinRim)"/>
-          <circle cx="120" cy="120" r="100" fill="url(#coinFace)" stroke="#b9810f" stroke-width="2"/>
-          <!-- inner ring -->
-          <circle cx="120" cy="120" r="86" fill="none" stroke="#fff3c4" stroke-width="3" stroke-opacity=".7"/>
-
-          <!-- bitcoin ₿ symbol -->
-          <text x="120" y="166" text-anchor="middle" font-family="Anton, sans-serif" font-size="150"
-                font-weight="700" fill="url(#btcSym)">₿</text>
-
-          <!-- highlight -->
-          <ellipse cx="86" cy="80" rx="40" ry="22" fill="#ffffff" opacity=".28" transform="rotate(-28 86 80)"/>
-        </svg>
+        <div class="coin-3d" id="coin3d" role="img" aria-label="Spinning 3D Bitcoin coin"></div>
       </div>
     </div>
   </div>
 
   <!-- PARTNERS / POWERED BY -->
   <div class="partners reveal">
-    <div class="lbl">Az adatok és az AI mögött</div>
+    <div class="lbl" data-i18n="partners.lbl">Behind the data and the AI</div>
     <div class="plogos">
       <span class="plogo"><span class="pi">🦎</span> CoinGecko</span>
       <span class="plogo"><span class="pi">📈</span> Yahoo Finance</span>
@@ -311,19 +307,19 @@
 <!-- TERMINAL DEMO -->
 <section class="wrap" style="padding-top:30px">
   <div class="sec-head reveal">
-    <span class="kicker">// élő demó</span>
-    <h2 class="display">Egy elemzés, lépésről lépésre</h2>
+    <span class="kicker" data-i18n="term.kicker">// live demo</span>
+    <h2 class="display" data-i18n="term.h2">One analysis, step by step</h2>
   </div>
   <div class="terminal reveal">
-    <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>ai-crypto-tracker · analízis</span></div>
+    <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span data-i18n="term.bar">ai-crypto-tracker · analysis</span></div>
     <div class="term-body">
       <div><span class="c1">$</span> <span class="c2">tracker</span> --analyze BTC-USD</div>
-      <div><span class="c1"># adatok betöltése: Yahoo Finance ✓</span></div>
-      <div><span class="key">RSI</span>(14): <span class="up">31.4</span> &nbsp; <span class="key">MACD</span>: <span class="up">bullish kereszteződés</span> &nbsp; <span class="key">BB</span>: alsó sáv</div>
-      <div><span class="key">ML modell</span> (RandomForest + GradientBoost): <span class="up">+4.8%</span> 7 napra</div>
+      <div data-i18n="term.l2"><span class="c1"># loading data: Yahoo Finance ✓</span></div>
+      <div data-i18n="term.l3"><span class="key">RSI</span>(14): <span class="up">31.4</span> &nbsp; <span class="key">MACD</span>: <span class="up">bullish crossover</span> &nbsp; <span class="key">BB</span>: lower band</div>
+      <div data-i18n="term.l4"><span class="key">ML model</span> (RandomForest + GradientBoost): <span class="up">+4.8%</span> over 7 days</div>
       <div>&nbsp;</div>
-      <div><span class="c1">→ Döntés:</span> <span class="signal buy">VÉTEL</span> &nbsp;<span class="c1">megbízhatóság 82%</span></div>
-      <div><span class="c1"># Discord értesítés elküldve ✓</span></div>
+      <div data-i18n="term.l6"><span class="c1">→ Decision:</span> <span class="signal buy">BUY</span> &nbsp;<span class="c1">confidence 82%</span></div>
+      <div data-i18n="term.l7"><span class="c1"># Discord alert sent ✓</span></div>
     </div>
   </div>
 </section>
@@ -331,32 +327,32 @@
 <!-- FEATURES -->
 <section id="funkciok" class="wrap">
   <div class="sec-head reveal">
-    <span class="kicker">// amit tud</span>
-    <h2 class="display">Minden eszköz egy helyen</h2>
-    <p>Nem jóslás. Adat, modell és fegyelem — átlátható jelzésekké fordítva.</p>
+    <span class="kicker" data-i18n="feat.kicker">// what it does</span>
+    <h2 class="display" data-i18n="feat.h2">Every tool in one place</h2>
+    <p data-i18n="feat.sub">Not fortune-telling. Data, models and discipline — turned into transparent signals.</p>
   </div>
   <div class="grid cards">
-    <div class="card reveal"><div class="ic">🧠</div><h3>Gépi tanulású előrejelzés</h3><p>RandomForest és GradientBoost modellek a historikus áradatból tanulnak, és valószínűségi árirányt becsülnek.</p></div>
-    <div class="card reveal"><div class="ic">📊</div><h3>Technikai indikátorok</h3><p>RSI, MACD, Bollinger-szalagok, mozgóátlagok és momentum — automatikusan kiszámolva minden eszközre.</p></div>
-    <div class="card reveal"><div class="ic">🕯️</div><h3>Saját gyertyadiagram</h3><p>Natívan rajzolt, gyors candlestick chart QPainterrel — zoom, idősíkok, indikátor-overlay.</p></div>
-    <div class="card reveal"><div class="ic">🤖</div><h3>AI kommentár</h3><p>Claude és OpenAI emberi nyelven foglalja össze, mit jelentenek a számok — és mire érdemes figyelni.</p></div>
-    <div class="card reveal"><div class="ic">🔔</div><h3>Discord jelzések</h3><p>Minden új VÉTEL/ELADÁS döntés azonnal megérkezik Discordon — nem ülsz egész nap a képernyő előtt.</p></div>
-    <div class="card reveal"><div class="ic">💾</div><h3>Előzmények &amp; portfólió</h3><p>SQLite napló minden elemzésről, kedvencek és holdingok követése, visszamérhető döntések.</p></div>
+    <div class="card reveal"><div class="ic">🧠</div><h3 data-i18n="feat.c1t">Machine-learning forecasts</h3><p data-i18n="feat.c1d">RandomForest and GradientBoost models learn from historical price data and estimate a probabilistic price direction.</p></div>
+    <div class="card reveal"><div class="ic">📊</div><h3 data-i18n="feat.c2t">Technical indicators</h3><p data-i18n="feat.c2d">RSI, MACD, Bollinger Bands, moving averages and momentum — calculated automatically for every asset.</p></div>
+    <div class="card reveal"><div class="ic">🕯️</div><h3 data-i18n="feat.c3t">Built-in candlestick chart</h3><p data-i18n="feat.c3d">Natively drawn, fast candlestick chart with QPainter — zoom, timeframes, indicator overlay.</p></div>
+    <div class="card reveal"><div class="ic">🤖</div><h3 data-i18n="feat.c4t">AI commentary</h3><p data-i18n="feat.c4d">Claude and OpenAI summarise in plain language what the numbers mean — and what to watch for.</p></div>
+    <div class="card reveal"><div class="ic">🔔</div><h3 data-i18n="feat.c5t">Discord signals</h3><p data-i18n="feat.c5d">Every new BUY/SELL decision arrives instantly on Discord — no need to sit in front of the screen all day.</p></div>
+    <div class="card reveal"><div class="ic">💾</div><h3 data-i18n="feat.c6t">History &amp; portfolio</h3><p data-i18n="feat.c6d">SQLite log of every analysis, tracking favourites and holdings, decisions you can back-test.</p></div>
   </div>
 </section>
 
 <!-- HOW IT WORKS -->
 <section id="hogyan" class="wrap">
   <div class="sec-head reveal">
-    <span class="kicker">// pipeline</span>
-    <h2 class="display">Négy lépés a jelzésig</h2>
-    <p>Az adattól a döntésig — minden automatizálva, átláthatóan.</p>
+    <span class="kicker" data-i18n="how.kicker">// pipeline</span>
+    <h2 class="display" data-i18n="how.h2">Four steps to a signal</h2>
+    <p data-i18n="how.sub">From data to decision — fully automated, transparently.</p>
   </div>
   <div class="grid steps">
-    <div class="step reveal"><span class="n">01</span><h4>Adatgyűjtés</h4><p>Élő ár- és volumenadatok Yahoo Finance-ről, percre kész frissítéssel.</p></div>
-    <div class="step reveal"><span class="n">02</span><h4>Elemzés</h4><p>Indikátorok kiszámítása + ML modell betanítás az eszköz történetén.</p></div>
-    <div class="step reveal"><span class="n">03</span><h4>AI döntés</h4><p>A jelek súlyozása, VÉTEL/ELADÁS/TARTÁS javaslat megbízhatósági szinttel.</p></div>
-    <div class="step reveal"><span class="n">04</span><h4>Értesítés</h4><p>Jelzés Discordon, naplózva az előzmények közé.</p></div>
+    <div class="step reveal"><span class="n">01</span><h4 data-i18n="how.s1t">Data collection</h4><p data-i18n="how.s1d">Live price and volume data from Yahoo Finance, updated to the minute.</p></div>
+    <div class="step reveal"><span class="n">02</span><h4 data-i18n="how.s2t">Analysis</h4><p data-i18n="how.s2d">Calculating indicators + training the ML model on the asset's history.</p></div>
+    <div class="step reveal"><span class="n">03</span><h4 data-i18n="how.s3t">AI decision</h4><p data-i18n="how.s3d">Weighting the signals, a BUY/SELL/HOLD recommendation with a confidence level.</p></div>
+    <div class="step reveal"><span class="n">04</span><h4 data-i18n="how.s4t">Notification</h4><p data-i18n="how.s4d">Signal on Discord, logged into your history.</p></div>
   </div>
 </section>
 
@@ -364,18 +360,18 @@
 <section id="indikatorok" class="wrap">
   <div class="split">
     <div class="reveal">
-      <span class="kicker">// a motorháztető alatt</span>
-      <h2 class="display">Indikátorok, amikben<br>a profik bíznak</h2>
-      <p class="lead">Nem egyetlen jelre épít. Több, egymástól független indikátor konszenzusa adja a végső döntést — így kevesebb a fals jelzés.</p>
+      <span class="kicker" data-i18n="ind.kicker">// under the hood</span>
+      <h2 class="display" data-i18n="ind.h2">Indicators the<br>pros trust</h2>
+      <p class="lead" data-i18n="ind.lead">It doesn't rely on a single signal. The consensus of several independent indicators makes the final call — so there are fewer false signals.</p>
       <div class="ilist">
-        <div class="irow"><span class="tag">RSI</span><div>Relatív erő index<small>túladott / túlvett zónák</small></div><span class="chip up">túladott</span></div>
-        <div class="irow"><span class="tag">MACD</span><div>Mozgóátlag konvergencia<small>trendforduló jelzés</small></div><span class="chip up">bullish</span></div>
-        <div class="irow"><span class="tag">BB</span><div>Bollinger-szalagok<small>volatilitás &amp; sávkitörés</small></div><span class="chip neu">semleges</span></div>
-        <div class="irow"><span class="tag">MA</span><div>Mozgóátlagok<small>50/200 napos kereszteződés</small></div><span class="chip up">golden cross</span></div>
+        <div class="irow"><span class="tag">RSI</span><div data-i18n="ind.r1">Relative Strength Index<small>oversold / overbought zones</small></div><span class="chip up" data-i18n="ind.c1">oversold</span></div>
+        <div class="irow"><span class="tag">MACD</span><div data-i18n="ind.r2">Moving Average Convergence<small>trend-reversal signal</small></div><span class="chip up" data-i18n="ind.c2">bullish</span></div>
+        <div class="irow"><span class="tag">BB</span><div data-i18n="ind.r3">Bollinger Bands<small>volatility &amp; breakout</small></div><span class="chip neu" data-i18n="ind.c3">neutral</span></div>
+        <div class="irow"><span class="tag">MA</span><div data-i18n="ind.r4">Moving Averages<small>50/200-day cross</small></div><span class="chip up" data-i18n="ind.c4">golden cross</span></div>
       </div>
     </div>
     <div class="panel-vis reveal">
-      <div class="ph"><b>BTC-USD</b><span class="price">▲ +4.8% · 7d előrejelzés</span></div>
+      <div class="ph"><b>BTC-USD</b><span class="price" data-i18n="ind.price">▲ +4.8% · 7d forecast</span></div>
       <svg class="chart" viewBox="0 0 400 200" preserveAspectRatio="none">
         <defs><linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stop-color="rgba(35,232,122,.35)"/><stop offset="1" stop-color="rgba(35,232,122,0)"/>
@@ -386,7 +382,7 @@
         <circle cx="280" cy="70" r="5" fill="var(--neon-2)"/>
       </svg>
       <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono';font-size:.75rem;color:var(--muted);margin-top:8px">
-        <span>− 30 nap</span><span style="color:var(--neon-2)">↑ jelenlegi jelzés</span><span>előrejelzés →</span>
+        <span data-i18n="ind.lg1">− 30 days</span><span style="color:var(--neon-2)" data-i18n="ind.lg2">↑ current signal</span><span data-i18n="ind.lg3">forecast →</span>
       </div>
     </div>
   </div>
@@ -395,23 +391,23 @@
 <!-- AI -->
 <section id="ai" class="wrap">
   <div class="sec-head reveal">
-    <span class="kicker">// AI elemző</span>
-    <h2 class="display">Mintha lenne egy elemződ —<br>aki sosem alszik</h2>
-    <p>A számok mellé emberi nyelvű magyarázat. Két AI motor: Claude és GPT.</p>
+    <span class="kicker" data-i18n="ai.kicker">// AI analyst</span>
+    <h2 class="display" data-i18n="ai.h2">Like having an analyst —<br>who never sleeps</h2>
+    <p data-i18n="ai.sub">Human-language explanation alongside the numbers. Two AI engines: Claude and GPT.</p>
   </div>
   <div class="ai-box reveal">
     <div class="ai-msg">
       <div class="ai-av">Ai</div>
       <div class="body">
-        <div class="meta">AI Crypto Tracker · Claude · 2 perce</div>
-        <p>A <b>BTC-USD</b> jelenleg túladott RSI-zónában van (31,4), miközben a MACD bullish kereszteződést mutat és az ár az alsó Bollinger-sávhoz közelít. A modell 7 napra <b>+4,8%</b> mozgást becsül. A jelek konszenzusa <b style="color:var(--up)">VÉTEL</b>-t támogat, 82%-os megbízhatósággal — de figyeld a 200 napos mozgóátlagot ellenállásként.</p>
+        <div class="meta" data-i18n="ai.meta1">AI Crypto Tracker · Claude · 2 min ago</div>
+        <p data-i18n="ai.msg1"><b>BTC-USD</b> is currently in an oversold RSI zone (31.4), while the MACD shows a bullish crossover and the price is approaching the lower Bollinger band. The model estimates a <b>+4.8%</b> move over 7 days. The consensus of signals supports <b style="color:var(--up)">BUY</b> with 82% confidence — but watch the 200-day moving average as resistance.</p>
       </div>
     </div>
     <div class="ai-msg" style="margin-bottom:0">
-      <div class="ai-av" style="background:linear-gradient(135deg,#aef85e,var(--neon))">Te</div>
+      <div class="ai-av" style="background:linear-gradient(135deg,#aef85e,var(--neon))" data-i18n="ai.you">You</div>
       <div class="body" style="background:rgba(35,232,122,.05)">
-        <div class="meta">Te · most</div>
-        <p>És kockázat oldalon mire figyeljek?</p>
+        <div class="meta" data-i18n="ai.meta2">You · now</div>
+        <p data-i18n="ai.msg2">And what should I watch on the risk side?</p>
       </div>
     </div>
   </div>
@@ -420,27 +416,27 @@
 <!-- COMMUNITY -->
 <section id="kozosseg" class="wrap">
   <div class="sec-head reveal">
-    <span class="kicker">// csatlakozz</span>
-    <h2 class="display">Légy ott, ahol a jelzések<br>megszületnek</h2>
-    <p>Discord, nyílt fejlesztés és minden linkem egy helyen.</p>
+    <span class="kicker" data-i18n="com.kicker">// join</span>
+    <h2 class="display" data-i18n="com.h2">Be where the signals<br>are born</h2>
+    <p data-i18n="com.sub">Discord, open development and all my links in one place.</p>
   </div>
   <div class="grid community">
-    <a class="soc reveal" href="https://linktr.ee/Botirocky" target="_blank" rel="noopener"><span class="e">🔗</span><b>Linktree</b><span>Minden elérhetőségem egy helyen</span></a>
-    <a class="soc reveal" href="https://github.com/Botirocky" target="_blank" rel="noopener"><span class="e">🐙</span><b>GitHub</b><span>Nyílt fejlesztés &amp; changelog</span></a>
+    <a class="soc reveal" href="https://linktr.ee/Botirocky" target="_blank" rel="noopener"><span class="e">🔗</span><b>Linktree</b><span data-i18n="com.soc1">All my contact links in one place</span></a>
+    <a class="soc reveal" href="https://github.com/Botirocky" target="_blank" rel="noopener"><span class="e">🐙</span><b>GitHub</b><span data-i18n="com.soc2">Open development &amp; changelog</span></a>
     <a class="soc reveal" href="mailto:buczibotond@gmail.com"><span class="e">✉️</span><b>E‑mail</b><span>buczibotond@gmail.com</span></a>
-    <button class="soc reveal" id="discordCard" type="button" data-user="the.kobe" style="font-family:inherit;color:inherit;cursor:pointer;text-align:left"><span class="e">💬</span><b>Discord</b><span id="discordLabel">the.kobe · kattints a másoláshoz</span></button>
+    <button class="soc reveal" id="discordCard" type="button" data-user="the.kobe" style="font-family:inherit;color:inherit;cursor:pointer;text-align:left"><span class="e">💬</span><b>Discord</b><span id="discordLabel" data-i18n="com.discord">the.kobe · click to copy</span></button>
   </div>
 </section>
 
 <!-- CTA -->
 <section class="cta" id="cta">
   <div class="cta-inner wrap reveal">
-    <span class="kicker">// kezdd el még ma</span>
-    <h2 class="display">Engedd, hogy a bestia<br>figyelje a piacot helyetted.</h2>
-    <p>Telepítsd a desktop appot, kösd be a Discord értesítéseket, és kapd meg az első jelzést percek alatt.</p>
+    <span class="kicker" data-i18n="cta.kicker">// start today</span>
+    <h2 class="display" data-i18n="cta.h2">Let the beast<br>watch the market for you.</h2>
+    <p data-i18n="cta.sub">Install the desktop app, connect Discord notifications, and get your first signal in minutes.</p>
     <div class="hero-cta" style="justify-content:center;margin-bottom:0">
-      <a class="btn btn-primary" href="https://github.com/Botirocky" target="_blank" rel="noopener">⬇ Letöltés &amp; forráskód</a>
-      <a class="btn btn-ghost" href="https://linktr.ee/Botirocky" target="_blank" rel="noopener">Minden linkem ↗</a>
+      <a class="btn btn-primary" href="https://github.com/Botirocky" target="_blank" rel="noopener" data-i18n="cta.btn1">⬇ Download &amp; source</a>
+      <a class="btn btn-ghost" href="https://linktr.ee/Botirocky" target="_blank" rel="noopener" data-i18n="cta.btn2">All my links ↗</a>
     </div>
   </div>
 </section>
@@ -452,28 +448,191 @@
     <div class="foot">
       <a class="logo" href="#top"><span class="dot">Ai</span> AI Crypto Tracker</a>
       <div class="foot-links">
-        <a href="#funkciok">Funkciók</a>
-        <a href="#hogyan">Működés</a>
-        <a href="#indikatorok">Indikátorok</a>
-        <a href="#ai">AI</a>
+        <a href="#funkciok" data-i18n="foot.features">Features</a>
+        <a href="#hogyan" data-i18n="foot.how">How</a>
+        <a href="#indikatorok" data-i18n="foot.indicators">Indicators</a>
+        <a href="#ai" data-i18n="foot.ai">AI</a>
         <a href="https://github.com/Botirocky" target="_blank" rel="noopener">GitHub</a>
         <a href="https://linktr.ee/Botirocky" target="_blank" rel="noopener">Linktree</a>
         <a href="mailto:buczibotond@gmail.com">E‑mail</a>
       </div>
     </div>
-    <p class="disclaimer">⚠️ Tájékoztatás: Az AI Crypto Tracker oktatási és elemzési segédeszköz. A megjelenített
-    jelzések és előrejelzések <b>nem minősülnek befektetési tanácsadásnak</b>. A kriptovaluta- és
-    eszközkereskedés magas kockázattal jár; saját felelősségedre, körültekintően dönts. A múltbeli
-    teljesítmény nem garancia a jövőbeli eredményekre.</p>
-    <p style="margin-top:18px;font-size:.82rem">© 2026 Buczi Botond · AI Crypto Tracker · Készült ❤️-tel és egy kis gépi tanulással.</p>
+    <p class="disclaimer" data-i18n="foot.disclaimer">⚠️ Notice: AI Crypto Tracker is an educational and analytical aid. The signals and
+    forecasts shown <b>do not constitute investment advice</b>. Cryptocurrency and asset trading carries high risk;
+    decide carefully and at your own responsibility. Past performance is no guarantee of future results.</p>
+    <p style="margin-top:18px;font-size:.82rem" data-i18n="foot.copy">© 2026 Buczi Botond · AI Crypto Tracker · Made with ❤️ and a little machine learning.</p>
   </div>
 </footer>
 
 <script>
+  // ---- i18n szótár (alapértelmezett: angol) ----
+  const I18N={
+    en:{
+      'doc.title':'AI Crypto Tracker — The beast that reads the market',
+      'doc.desc':'AI Crypto Tracker – AI-powered asset analyst with machine-learning forecasts, technical indicators and real-time BUY/SELL signals.',
+      'nav.features':'Features','nav.how':'How it works','nav.indicators':'Indicators','nav.ai':'AI analyst','nav.community':'Community','nav.download':'Download ↗',
+      'hero.badge':'Live signals · machine learning · 0 emotion',
+      'hero.h1':'THE <em>AI</em><br>THAT READS<br>BETWEEN THE<br>PRICES.',
+      'hero.lead':'AI Crypto Tracker brings the signal in from the wild: machine-learning forecasts, technical indicators and live BUY/SELL alerts — straight to Discord. You decide, the beast watches.',
+      'hero.cta1':'Join the pack →','hero.cta2':'How it works?',
+      'hero.stat1':'technical indicators','hero.stat2':'AI engines — Claude &amp; GPT','hero.stat3':'continuous monitoring',
+      'partners.lbl':'Behind the data and the AI',
+      'term.kicker':'// live demo','term.h2':'One analysis, step by step','term.bar':'ai-crypto-tracker · analysis',
+      'term.l2':'<span class="c1"># loading data: Yahoo Finance ✓</span>',
+      'term.l3':'<span class="key">RSI</span>(14): <span class="up">31.4</span> &nbsp; <span class="key">MACD</span>: <span class="up">bullish crossover</span> &nbsp; <span class="key">BB</span>: lower band',
+      'term.l4':'<span class="key">ML model</span> (RandomForest + GradientBoost): <span class="up">+4.8%</span> over 7 days',
+      'term.l6':'<span class="c1">→ Decision:</span> <span class="signal buy">BUY</span> &nbsp;<span class="c1">confidence 82%</span>',
+      'term.l7':'<span class="c1"># Discord alert sent ✓</span>',
+      'feat.kicker':'// what it does','feat.h2':'Every tool in one place','feat.sub':'Not fortune-telling. Data, models and discipline — turned into transparent signals.',
+      'feat.c1t':'Machine-learning forecasts','feat.c1d':'RandomForest and GradientBoost models learn from historical price data and estimate a probabilistic price direction.',
+      'feat.c2t':'Technical indicators','feat.c2d':'RSI, MACD, Bollinger Bands, moving averages and momentum — calculated automatically for every asset.',
+      'feat.c3t':'Built-in candlestick chart','feat.c3d':'Natively drawn, fast candlestick chart with QPainter — zoom, timeframes, indicator overlay.',
+      'feat.c4t':'AI commentary','feat.c4d':'Claude and OpenAI summarise in plain language what the numbers mean — and what to watch for.',
+      'feat.c5t':'Discord signals','feat.c5d':'Every new BUY/SELL decision arrives instantly on Discord — no need to sit in front of the screen all day.',
+      'feat.c6t':'History &amp; portfolio','feat.c6d':'SQLite log of every analysis, tracking favourites and holdings, decisions you can back-test.',
+      'how.kicker':'// pipeline','how.h2':'Four steps to a signal','how.sub':'From data to decision — fully automated, transparently.',
+      'how.s1t':'Data collection','how.s1d':'Live price and volume data from Yahoo Finance, updated to the minute.',
+      'how.s2t':'Analysis','how.s2d':"Calculating indicators + training the ML model on the asset's history.",
+      'how.s3t':'AI decision','how.s3d':'Weighting the signals, a BUY/SELL/HOLD recommendation with a confidence level.',
+      'how.s4t':'Notification','how.s4d':'Signal on Discord, logged into your history.',
+      'ind.kicker':'// under the hood','ind.h2':'Indicators the<br>pros trust',
+      'ind.lead':"It doesn't rely on a single signal. The consensus of several independent indicators makes the final call — so there are fewer false signals.",
+      'ind.r1':'Relative Strength Index<small>oversold / overbought zones</small>','ind.c1':'oversold',
+      'ind.r2':'Moving Average Convergence<small>trend-reversal signal</small>','ind.c2':'bullish',
+      'ind.r3':'Bollinger Bands<small>volatility &amp; breakout</small>','ind.c3':'neutral',
+      'ind.r4':'Moving Averages<small>50/200-day cross</small>','ind.c4':'golden cross',
+      'ind.price':'▲ +4.8% · 7d forecast','ind.lg1':'− 30 days','ind.lg2':'↑ current signal','ind.lg3':'forecast →',
+      'ai.kicker':'// AI analyst','ai.h2':'Like having an analyst —<br>who never sleeps','ai.sub':'Human-language explanation alongside the numbers. Two AI engines: Claude and GPT.',
+      'ai.meta1':'AI Crypto Tracker · Claude · 2 min ago',
+      'ai.msg1':'<b>BTC-USD</b> is currently in an oversold RSI zone (31.4), while the MACD shows a bullish crossover and the price is approaching the lower Bollinger band. The model estimates a <b>+4.8%</b> move over 7 days. The consensus of signals supports <b style="color:var(--up)">BUY</b> with 82% confidence — but watch the 200-day moving average as resistance.',
+      'ai.you':'You','ai.meta2':'You · now','ai.msg2':'And what should I watch on the risk side?',
+      'com.kicker':'// join','com.h2':'Be where the signals<br>are born','com.sub':'Discord, open development and all my links in one place.',
+      'com.soc1':'All my contact links in one place','com.soc2':'Open development &amp; changelog','com.discord':'the.kobe · click to copy',
+      'cta.kicker':'// start today','cta.h2':'Let the beast<br>watch the market for you.','cta.sub':'Install the desktop app, connect Discord notifications, and get your first signal in minutes.',
+      'cta.btn1':'⬇ Download &amp; source','cta.btn2':'All my links ↗',
+      'foot.features':'Features','foot.how':'How','foot.indicators':'Indicators','foot.ai':'AI',
+      'foot.disclaimer':'⚠️ Notice: AI Crypto Tracker is an educational and analytical aid. The signals and forecasts shown <b>do not constitute investment advice</b>. Cryptocurrency and asset trading carries high risk; decide carefully and at your own responsibility. Past performance is no guarantee of future results.',
+      'foot.copy':'© 2026 Buczi Botond · AI Crypto Tracker · Made with ❤️ and a little machine learning.',
+      'tk.live':'● LIVE · CoinGecko','tk.fallback':'○ fallback prices','dc.copied':'Copied! ✓ '
+    },
+    hu:{
+      'doc.title':'AI Crypto Tracker — A bestia, aki olvas a piacból',
+      'doc.desc':'AI Crypto Tracker – AI-alapú eszközelemző, gépi tanulású előrejelzéssel, technikai indikátorokkal és valós idejű VÉTEL/ELADÁS jelzésekkel.',
+      'nav.features':'Funkciók','nav.how':'Hogyan működik','nav.indicators':'Indikátorok','nav.ai':'AI elemző','nav.community':'Közösség','nav.download':'Letöltés ↗',
+      'hero.badge':'Élő jelzések · gépi tanulás · 0 érzelem',
+      'hero.h1':'AZ <em>AI</em>,<br>AMI OLVAS<br>AZ ÁRFOLYAMOK<br>KÖZÖTT.',
+      'hero.lead':'Az AI Crypto Tracker a vadonból hozza a jelet: gépi tanulású előrejelzés, technikai indikátorok és élő VÉTEL/ELADÁS riasztások — közvetlen Discordra. Te döntesz, a bestia figyel.',
+      'hero.cta1':'Csatlakozz a falkához →','hero.cta2':'Hogyan működik?',
+      'hero.stat1':'technikai indikátor','hero.stat2':'AI motor — Claude &amp; GPT','hero.stat3':'folyamatos figyelés',
+      'partners.lbl':'Az adatok és az AI mögött',
+      'term.kicker':'// élő demó','term.h2':'Egy elemzés, lépésről lépésre','term.bar':'ai-crypto-tracker · analízis',
+      'term.l2':'<span class="c1"># adatok betöltése: Yahoo Finance ✓</span>',
+      'term.l3':'<span class="key">RSI</span>(14): <span class="up">31.4</span> &nbsp; <span class="key">MACD</span>: <span class="up">bullish kereszteződés</span> &nbsp; <span class="key">BB</span>: alsó sáv',
+      'term.l4':'<span class="key">ML modell</span> (RandomForest + GradientBoost): <span class="up">+4.8%</span> 7 napra',
+      'term.l6':'<span class="c1">→ Döntés:</span> <span class="signal buy">VÉTEL</span> &nbsp;<span class="c1">megbízhatóság 82%</span>',
+      'term.l7':'<span class="c1"># Discord értesítés elküldve ✓</span>',
+      'feat.kicker':'// amit tud','feat.h2':'Minden eszköz egy helyen','feat.sub':'Nem jóslás. Adat, modell és fegyelem — átlátható jelzésekké fordítva.',
+      'feat.c1t':'Gépi tanulású előrejelzés','feat.c1d':'RandomForest és GradientBoost modellek a historikus áradatból tanulnak, és valószínűségi árirányt becsülnek.',
+      'feat.c2t':'Technikai indikátorok','feat.c2d':'RSI, MACD, Bollinger-szalagok, mozgóátlagok és momentum — automatikusan kiszámolva minden eszközre.',
+      'feat.c3t':'Saját gyertyadiagram','feat.c3d':'Natívan rajzolt, gyors candlestick chart QPainterrel — zoom, idősíkok, indikátor-overlay.',
+      'feat.c4t':'AI kommentár','feat.c4d':'Claude és OpenAI emberi nyelven foglalja össze, mit jelentenek a számok — és mire érdemes figyelni.',
+      'feat.c5t':'Discord jelzések','feat.c5d':'Minden új VÉTEL/ELADÁS döntés azonnal megérkezik Discordon — nem ülsz egész nap a képernyő előtt.',
+      'feat.c6t':'Előzmények &amp; portfólió','feat.c6d':'SQLite napló minden elemzésről, kedvencek és holdingok követése, visszamérhető döntések.',
+      'how.kicker':'// pipeline','how.h2':'Négy lépés a jelzésig','how.sub':'Az adattól a döntésig — minden automatizálva, átláthatóan.',
+      'how.s1t':'Adatgyűjtés','how.s1d':'Élő ár- és volumenadatok Yahoo Finance-ről, percre kész frissítéssel.',
+      'how.s2t':'Elemzés','how.s2d':'Indikátorok kiszámítása + ML modell betanítás az eszköz történetén.',
+      'how.s3t':'AI döntés','how.s3d':'A jelek súlyozása, VÉTEL/ELADÁS/TARTÁS javaslat megbízhatósági szinttel.',
+      'how.s4t':'Értesítés','how.s4d':'Jelzés Discordon, naplózva az előzmények közé.',
+      'ind.kicker':'// a motorháztető alatt','ind.h2':'Indikátorok, amikben<br>a profik bíznak',
+      'ind.lead':'Nem egyetlen jelre épít. Több, egymástól független indikátor konszenzusa adja a végső döntést — így kevesebb a fals jelzés.',
+      'ind.r1':'Relatív erő index<small>túladott / túlvett zónák</small>','ind.c1':'túladott',
+      'ind.r2':'Mozgóátlag konvergencia<small>trendforduló jelzés</small>','ind.c2':'bullish',
+      'ind.r3':'Bollinger-szalagok<small>volatilitás &amp; sávkitörés</small>','ind.c3':'semleges',
+      'ind.r4':'Mozgóátlagok<small>50/200 napos kereszteződés</small>','ind.c4':'golden cross',
+      'ind.price':'▲ +4.8% · 7d előrejelzés','ind.lg1':'− 30 nap','ind.lg2':'↑ jelenlegi jelzés','ind.lg3':'előrejelzés →',
+      'ai.kicker':'// AI elemző','ai.h2':'Mintha lenne egy elemződ —<br>aki sosem alszik','ai.sub':'A számok mellé emberi nyelvű magyarázat. Két AI motor: Claude és GPT.',
+      'ai.meta1':'AI Crypto Tracker · Claude · 2 perce',
+      'ai.msg1':'A <b>BTC-USD</b> jelenleg túladott RSI-zónában van (31,4), miközben a MACD bullish kereszteződést mutat és az ár az alsó Bollinger-sávhoz közelít. A modell 7 napra <b>+4,8%</b> mozgást becsül. A jelek konszenzusa <b style="color:var(--up)">VÉTEL</b>-t támogat, 82%-os megbízhatósággal — de figyeld a 200 napos mozgóátlagot ellenállásként.',
+      'ai.you':'Te','ai.meta2':'Te · most','ai.msg2':'És kockázat oldalon mire figyeljek?',
+      'com.kicker':'// csatlakozz','com.h2':'Légy ott, ahol a jelzések<br>megszületnek','com.sub':'Discord, nyílt fejlesztés és minden linkem egy helyen.',
+      'com.soc1':'Minden elérhetőségem egy helyen','com.soc2':'Nyílt fejlesztés &amp; changelog','com.discord':'the.kobe · kattints a másoláshoz',
+      'cta.kicker':'// kezdd el még ma','cta.h2':'Engedd, hogy a bestia<br>figyelje a piacot helyetted.','cta.sub':'Telepítsd a desktop appot, kösd be a Discord értesítéseket, és kapd meg az első jelzést percek alatt.',
+      'cta.btn1':'⬇ Letöltés &amp; forráskód','cta.btn2':'Minden linkem ↗',
+      'foot.features':'Funkciók','foot.how':'Működés','foot.indicators':'Indikátorok','foot.ai':'AI',
+      'foot.disclaimer':'⚠️ Tájékoztatás: Az AI Crypto Tracker oktatási és elemzési segédeszköz. A megjelenített jelzések és előrejelzések <b>nem minősülnek befektetési tanácsadásnak</b>. A kriptovaluta- és eszközkereskedés magas kockázattal jár; saját felelősségedre, körültekintően dönts. A múltbeli teljesítmény nem garancia a jövőbeli eredményekre.',
+      'foot.copy':'© 2026 Buczi Botond · AI Crypto Tracker · Készült ❤️-tel és egy kis gépi tanulással.',
+      'tk.live':'● ÉLŐ · CoinGecko','tk.fallback':'○ tartalék árak','dc.copied':'Másolva! ✓ '
+    }
+  };
+  let CUR_LANG = localStorage.getItem('lang') || 'en';
+  const langBtn=document.getElementById('langBtn');
+
+  function t(key){ return (I18N[CUR_LANG] && I18N[CUR_LANG][key]) ?? (I18N.en[key] ?? ''); }
+
+  function applyLang(lang){
+    CUR_LANG=lang;
+    document.documentElement.lang=lang;
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const v=I18N[lang][el.getAttribute('data-i18n')];
+      if(v!=null) el.innerHTML=v;
+    });
+    document.title=t('doc.title');
+    const md=document.querySelector('meta[name="description"]');
+    if(md) md.setAttribute('content',t('doc.desc'));
+    if(langBtn) langBtn.textContent = lang==='en' ? 'HU' : 'EN';
+    localStorage.setItem('lang',lang);
+    if(window._renderTickerCurrent) window._renderTickerCurrent();
+  }
+  if(langBtn) langBtn.addEventListener('click',()=>applyLang(CUR_LANG==='en'?'hu':'en'));
+
   // mobile nav
   const tgl=document.getElementById('navToggle'),nl=document.getElementById('navlinks');
   tgl.addEventListener('click',()=>nl.classList.toggle('open'));
   nl.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nl.classList.remove('open')));
+
+  // ---- 3D Bitcoin érme felépítése ----
+  (function buildCoin(){
+    const host=document.getElementById('coin3d'); if(!host) return;
+    // recézett perem (ticks) az előlapra
+    let ticks='';
+    for(let i=0;i<80;i++){
+      const a=i/80*Math.PI*2;
+      const x1=120+Math.cos(a)*107, y1=120+Math.sin(a)*107;
+      const x2=120+Math.cos(a)*117, y2=120+Math.sin(a)*117;
+      ticks+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#8a5e0a" stroke-width="2.2" stroke-opacity=".55"/>`;
+    }
+    const face=(s)=>`<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <radialGradient id="cf${s}" cx="36%" cy="28%" r="82%">
+          <stop offset="0" stop-color="#fff7da"/><stop offset="42%" stop-color="#ffcf4d"/>
+          <stop offset="78%" stop-color="#e7a01f"/><stop offset="100%" stop-color="#b9810f"/>
+        </radialGradient>
+        <linearGradient id="cr${s}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffeaa6"/><stop offset="50%" stop-color="#e0a52b"/>
+          <stop offset="100%" stop-color="#8a5e0a"/>
+        </linearGradient>
+        <linearGradient id="cs${s}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#a06b06"/><stop offset="1" stop-color="#6f4d06"/>
+        </linearGradient>
+      </defs>
+      <circle cx="120" cy="120" r="118" fill="url(#cr${s})"/>
+      ${ticks}
+      <circle cx="120" cy="120" r="104" fill="url(#cf${s})" stroke="#9a6d0c" stroke-width="1.5"/>
+      <circle cx="120" cy="120" r="90" fill="none" stroke="#fff6d8" stroke-width="2.5" stroke-opacity=".5"/>
+      <circle cx="120" cy="120" r="84" fill="none" stroke="#9a6d0c" stroke-width="1" stroke-opacity=".35"/>
+      <text x="120" y="168" text-anchor="middle" font-family="Anton,sans-serif" font-size="150" fill="#7a5408" fill-opacity=".5" transform="translate(2.5,3)">&#8383;</text>
+      <text x="120" y="168" text-anchor="middle" font-family="Anton,sans-serif" font-size="150" fill="url(#cs${s})">&#8383;</text>
+      <ellipse cx="84" cy="78" rx="46" ry="24" fill="#ffffff" opacity=".25" transform="rotate(-26 84 78)"/>
+    </svg>`;
+    const T=11, N=22; // fél-vastagság és perem-rétegek száma
+    let html=`<div class="coin-layer face" style="transform:rotateY(180deg) translateZ(${T}px)">${face('b')}</div>`;
+    for(let i=0;i<=N;i++){
+      const z=(-T + (2*T)*(i/N)).toFixed(2);
+      html+=`<div class="coin-layer edge" style="transform:translateZ(${z}px)"></div>`;
+    }
+    html+=`<div class="coin-layer face" style="transform:translateZ(${T}px)">${face('f')}</div>`;
+    host.innerHTML=html;
+  })();
 
   // ---- ticker: élő CoinGecko árak ----
   const tk=document.getElementById('ticker');
@@ -490,21 +649,24 @@
     chainlink:{usd:17.84,usd_24h_change:2.0}, polkadot:{usd:7.12,usd_24h_change:-2.1},
     'polygon-ecosystem-token':{usd:0.724,usd_24h_change:1.8}, litecoin:{usd:84.5,usd_24h_change:0.4}
   };
+  let _lastTicker={data:FALLBACK,live:false};
   const fmtPrice=v=>{
     if(v>=1000) return v.toLocaleString('en-US',{maximumFractionDigits:0});
     if(v>=1)    return v.toLocaleString('en-US',{maximumFractionDigits:2});
     return v.toLocaleString('en-US',{maximumFractionDigits:4});
   };
   function renderTicker(data,live){
+    _lastTicker={data,live};
     const row=COINS.map(([id,sym])=>{
       const d=data[id]; if(!d) return '';
       const c=d.usd_24h_change??0, cls=c>=0?'u':'d', sign=c>=0?'▲':'▼';
       return `<span class="tk"><b>${sym}</b> $${fmtPrice(d.usd)} <span class="${cls}">${sign} ${Math.abs(c).toFixed(2)}%</span></span>`;
     }).join('');
-    const dot=`<span class="tk" style="color:var(--neon)">${live?'● ÉLŐ · CoinGecko':'○ tartalék árak'}</span>`;
+    const dot=`<span class="tk" style="color:var(--neon)">${live?t('tk.live'):t('tk.fallback')}</span>`;
     const block=dot+row;
     tk.innerHTML=block+block;
   }
+  window._renderTickerCurrent=()=>renderTicker(_lastTicker.data,_lastTicker.live);
   async function loadTicker(){
     const ids=COINS.map(c=>c[0]).join(',');
     const url=`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`;
@@ -512,10 +674,14 @@
       const res=await fetch(url,{headers:{accept:'application/json'}});
       if(!res.ok) throw new Error(res.status);
       const data=await res.json();
-      if(!data||!data.bitcoin) throw new Error('üres válasz');
+      if(!data||!data.bitcoin) throw new Error('empty response');
       renderTicker(data,true);
     }catch(err){ renderTicker(FALLBACK,false); }
   }
+
+  // ---- nyelv alkalmazása indításkor ----
+  applyLang(CUR_LANG);
+
   renderTicker(FALLBACK,false);
   loadTicker();
   setInterval(loadTicker,60000);
@@ -528,10 +694,10 @@
   const dCard=document.getElementById('discordCard'),dLabel=document.getElementById('discordLabel');
   if(dCard){
     dCard.addEventListener('click',async()=>{
-      const user=dCard.dataset.user, orig='the.kobe · kattints a másoláshoz';
-      try{ await navigator.clipboard.writeText(user); dLabel.textContent='Másolva! ✓ '+user; }
+      const user=dCard.dataset.user;
+      try{ await navigator.clipboard.writeText(user); dLabel.textContent=t('dc.copied')+user; }
       catch(e){ dLabel.textContent=user; }
-      setTimeout(()=>dLabel.textContent=orig,2000);
+      setTimeout(()=>{ dLabel.innerHTML=t('com.discord'); },2000);
     });
   }
 </script>
